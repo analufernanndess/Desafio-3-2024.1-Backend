@@ -7,17 +7,34 @@ function changeText(id, text) {
   document.getElementById(id).innerText = text;
 }
 
-// Daqui para baixo voce ira escrever
-// o código para resolver o desafio
+let pokemonAtual = 1;
 
+async function buscarPokemon(pokemon) {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+    if (!response.ok) {
+      throw new Error("Pokémon não encontrado");
+    }
+    const data = await response.json();
+    changeText("name", `${data.name.toUpperCase()} #${data.id}`);
+    changeImage("img_sprite_front_default", data.sprites.front_default || "assets/missingno.png");
+}
+
+// Função para buscar o Pokémon anterior
 function previousPokemon() {
-  alert("Pokemon Anterior");
-  //abra o terminal em inspecionar no chrome para visualizar
-  console.log("Pokemon Anterior");
+  if (pokemonAtual > 1) {
+    pokemonAtual--;
+    buscarPokemon(pokemonAtual);
+  }
+  console.log("Pokemon Anterior: ", pokemonAtual);
 }
 
+// Função para buscar o próximo Pokémon
 function nextPokemon() {
-  alert("Pokemon Seguinte");
-  //abra o terminal em inspecionar no chrome para visualizar
-  console.log("Pokemon Seguinte");
+  pokemonAtual++;
+  buscarPokemon(pokemonAtual);
+  console.log("Pokemon Seguinte: ", pokemonAtual);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  buscarPokemon(pokemonAtual);
+});
